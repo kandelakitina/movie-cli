@@ -4,8 +4,10 @@ import { parseArgs } from "@std/cli/parse-args";
 
 // Args Parsing
 
-const args = parseArgs(Deno.args);
+const args = parseArgs(Deno.args, {
+  string: ["_"], // treat all positional args as strings
+});
 
-const movie = args._[0];
+const movie = args._.join(" ");
 
 console.log(movie);
