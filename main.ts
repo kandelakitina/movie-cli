@@ -4,6 +4,13 @@ import { dedent } from "@qnighy/dedent";
 
 const OMDB_API_KEY = Deno.env.get("OMDB_API_KEY");
 
+if (!OMDB_API_KEY) {
+  printError("OMDB_API_KEY is not set");
+  Deno.exit(1);
+}
+
+const apiKey: string = OMDB_API_KEY;
+
 // Main flow
 
 console.log(bold(blue("🎥 Welcome to OMDB Movie CLI!")));
@@ -31,13 +38,12 @@ if (!movie) {
   Deno.exit(1);
 }
 
-const BASE_URI = `https://www.omdbapi.com/?apikey=${OMDB_API_KEY}&`;
-
 try {
   const result = await getMovie(movie);
   printMovie(result);
 } catch (err) {
   printError(err instanceof Error ? err.message : "Unknown error");
+  Deno.exit(1);
 }
 
 // Helpers
@@ -80,16 +86,20 @@ interface Movie {
 async function getMovie(name: string): Promise<Movie> {
   printMessage(`Fetching info for the movie ${name}`);
 
-  const params = new URLSearchParams({
-    t: String(name),
-  });
+  const url = new URL("https://www.omdbapi.com/");
+  url.searchParams.set("apikey", apiKey);
+  url.searchParams.set("t", name);
 
-  const res = await fetch(`${BASE_URI}${params.toString()}`);
+  const res = await fetch(url);
   if (!res.ok) {
     throw new Error(`Movie request failed (${res.status})`);
   }
 
   const data = await res.json();
+
+  if (data.Response === "False") {
+    throw new Error(data.Error || "Movie not found");
+  }
 
   return {
     title: data.Title,
