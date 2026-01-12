@@ -1,16 +1,17 @@
 import { parseArgs } from "@std/cli/parse-args";
 import { blue, bold, green, red, underline, yellow } from "@std/fmt/colors";
-import { dedent } from "@std/text/unstable-dedent";
+import { dedent } from "@qnighy/dedent";
 
 const OMDB_API_KEY = Deno.env.get("OMDB_API_KEY");
+
+// Main flow
+
+console.log(bold(blue("🎥 Welcome to OMDB Movie CLI!")));
 
 // Args Parsing
 
 const args = parseArgs(Deno.args, {
-  string: [
-    "_", // treat all positional args as strings
-    "movie",
-  ],
+  collect: ["movie"],
   boolean: ["help"],
   alias: {
     h: "help",
@@ -23,7 +24,7 @@ if (args.help) {
   Deno.exit(0);
 }
 
-const movie = args.movie ?? args._.join(" ");
+const movie = args.movie.join(" ");
 
 if (!movie) {
   printError("Movie name is required");
@@ -42,11 +43,11 @@ try {
 // Helpers
 
 function printMessage(message: string): void {
-  console.log(bold(green(`✅ ${message}`)));
+  console.log(bold(green(`${message}`)));
 }
 
 function printError(message: string): void {
-  console.log(bold(red(`❌ ${message}`)));
+  console.log(bold(red(`${message}`)));
 }
 
 function printHelp() {
@@ -77,9 +78,7 @@ interface Movie {
 }
 
 async function getMovie(name: string): Promise<Movie> {
-  printMessage(dedent`
-      Fetching info for the movie ${name}
-    `);
+  printMessage(`Fetching info for the movie ${name}`);
 
   const params = new URLSearchParams({
     t: String(name),
@@ -98,8 +97,3 @@ async function getMovie(name: string): Promise<Movie> {
     imdbRating: data.imdbRating,
   };
 }
-
-// Main flow
-
-console.log(bold(blue("🎥 Welcome to OMDB Movie CLI!")));
-console.log(); // empty line

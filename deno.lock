@@ -1,6 +1,7 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@qnighy/dedent@~0.1.2": "0.1.2",
     "jsr:@std/cli@^1.0.25": "1.0.25",
     "jsr:@std/fmt@^1.0.8": "1.0.8",
     "jsr:@std/internal@^1.0.12": "1.0.12",
@@ -8,6 +9,9 @@
     "jsr:@std/text@^1.0.16": "1.0.16"
   },
   "jsr": {
+    "@qnighy/dedent@0.1.2": {
+      "integrity": "9e420cff5b0082dba168385c9dfc56f25ef9a07999605e5fc9bc2058529998ee"
+    },
     "@std/cli@1.0.25": {
       "integrity": "1f85051b370c97a7a9dfc6ba626e7ed57a91bea8c081597276d1e78d929d8c91",
       "dependencies": [
@@ -32,6 +36,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@qnighy/dedent@~0.1.2",
       "jsr:@std/cli@^1.0.25",
       "jsr:@std/fmt@^1.0.8",
       "jsr:@std/text@^1.0.16"
