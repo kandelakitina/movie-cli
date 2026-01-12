@@ -9,8 +9,11 @@
         packages = with pkgs; [
           deno
           just
+
           sops
           age
+          direnv
+          yq
         ];
         shellHook = ''
           # 'deno info' to see deno's install folders
@@ -19,6 +22,7 @@
 
           deno --version
           sops --version --check-for-updates
+          direnv allow
         '';
       };
     };
