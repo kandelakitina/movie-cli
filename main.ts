@@ -1,5 +1,5 @@
 import { parseArgs } from "@std/cli/parse-args";
-import { green, red } from "@std/fmt/colors";
+import { blue, bold, green, red, underline, yellow } from "@std/fmt/colors";
 import { dedent } from "@std/text/unstable-dedent";
 
 const OMDB_API_KEY = Deno.env.get("OMDB_API_KEY");
@@ -22,29 +22,30 @@ const args = parseArgs(Deno.args, {
 // Helpers
 
 function printMessage(message: string): void {
-  console.log(green(message));
+  console.log(bold(green(`✅ ${message}`)));
 }
 
 function printError(message: string): void {
-  console.log(red(message));
+  console.log(bold(red(`❌ ${message}`)));
 }
 
 function printHelp() {
   console.log(dedent`
-    Just type a movie name in any of the following formats:
+    ${bold(underline(blue("📖 Help: Movie CLI Usage")))}
+    ${yellow("Just type a movie name in any of the following formats:")}
 
-    movie-cli Terminator 2
-    movie-cli "Terminator 2"
-    movie-cli -m Terminator 2
+    ${green("movie-cli Terminator 2")}
+    ${green('movie-cli "Terminator 2"')}
+    ${green("movie-cli -m Terminator 2")}
   `);
 }
 
 function printMovie(movie: Movie) {
-  printMessage(dedent`
-      Movie: ${movie.title}
-      Actors: ${movie.actors}
-      IMDB Rating: ${movie.imdbRating}
-    `);
+  console.log(dedent`
+    🎬 ${bold(blue("Movie:"))} ${bold(yellow(movie.title))}
+    👥 ${bold(blue("Actors:"))} ${movie.actors}
+    ⭐ ${bold(blue("IMDB Rating:"))} ${bold(green(String(movie.imdbRating)))}
+  `);
 }
 
 // API Fetcher
@@ -72,13 +73,16 @@ async function getMovie(name: string): Promise<Movie> {
   const data = await res.json();
 
   return {
-    title: data.title,
-    actors: data.actors,
+    title: data.Title,
+    actors: data.Actors,
     imdbRating: data.imdbRating,
   };
 }
 
 // Main flow
+
+console.log(bold(blue("🎥 Welcome to OMDB Movie CLI!")));
+console.log(); // empty line
 
 const movie = args.movie ?? args._.join(" ");
 
