@@ -1,0 +1,8 @@
+{
+	"name": "Boticelli's Deno App to search Movies on OMDB",
+	"exports": "./main.ts",
+	"version": "0.0.1",
+	"tasks": {
+		"dev": "deno run main.ts"
+	}
+}
