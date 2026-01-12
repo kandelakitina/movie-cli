@@ -8,6 +8,8 @@
         packages = with pkgs; [
           deno
           just
+          sops
+          age
         ];
         shellHook = ''
           # 'deno info' to see deno's install folders
