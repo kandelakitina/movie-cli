@@ -3,7 +3,6 @@ import { blue, bold, green, red, underline, yellow } from "@std/fmt/colors";
 import { dedent } from "@std/text/unstable-dedent";
 
 const OMDB_API_KEY = Deno.env.get("OMDB_API_KEY");
-const BASE_URI = `http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&`;
 
 // Args Parsing
 
@@ -18,6 +17,27 @@ const args = parseArgs(Deno.args, {
     m: "movie",
   },
 });
+
+if (args.help) {
+  printHelp();
+  Deno.exit(0);
+}
+
+const movie = args.movie ?? args._.join(" ");
+
+if (!movie) {
+  printError("Movie name is required");
+  Deno.exit(1);
+}
+
+const BASE_URI = `https://www.omdbapi.com/?apikey=${OMDB_API_KEY}&`;
+
+try {
+  const result = await getMovie(movie);
+  printMovie(result);
+} catch (err) {
+  printError(err instanceof Error ? err.message : "Unknown error");
+}
 
 // Helpers
 
@@ -83,22 +103,3 @@ async function getMovie(name: string): Promise<Movie> {
 
 console.log(bold(blue("🎥 Welcome to OMDB Movie CLI!")));
 console.log(); // empty line
-
-const movie = args.movie ?? args._.join(" ");
-
-if (!movie) {
-  printError("Movie name is required");
-  Deno.exit(1);
-}
-
-if (args.help) {
-  printHelp();
-  Deno.exit(0);
-}
-
-try {
-  const result = await getMovie(movie);
-  printMovie(result);
-} catch (err) {
-  printError(err instanceof Error ? err.message : "Unknown error");
-}
